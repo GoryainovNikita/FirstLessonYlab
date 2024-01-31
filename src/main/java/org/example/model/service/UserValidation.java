@@ -8,7 +8,7 @@ import java.util.NoSuchElementException;
  * Класс отвечающий за валидацию пользователя. Проверяет существует ли такой пользователь вообще
  */
 
-public class Validation {
+public class UserValidation {
 
     private static Repository repo = new Repository();
 

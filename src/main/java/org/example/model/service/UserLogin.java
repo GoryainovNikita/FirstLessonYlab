@@ -1,13 +1,13 @@
 package org.example.model.service;
 
 import org.example.model.db.Repository;
-import org.example.model.user.User;
+import org.example.entity.user.User;
 
 /**
  * Класс отвечающий за логику входа в программу. Проверяет подходит ли пароль
  */
 
-public class Login {
+public class UserLogin {
     private static Repository repo = new Repository();
 
     /**
@@ -17,7 +17,7 @@ public class Login {
      * @return
      */
     public static User login(String login, String password) {
-        if (Validation.validation(login)) {
+        if (UserValidation.validation(login)) {
             User user = repo.getUserByLogin(login);
             if (password.equals(user.getPassword())) {
                 return user;

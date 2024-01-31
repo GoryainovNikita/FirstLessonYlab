@@ -1,12 +1,9 @@
-package org.example.model.user;
+package org.example.entity.user;
 
-import org.example.model.meter.MeterWater;
 import org.example.model.meter.UserMeter;
 
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 
 /**
@@ -23,7 +20,6 @@ public class User {
 
     private UserMeter userMeter;
 
-    private List<String> audit;
 
 
     public User(String firstName, String lastName, String login, String password) {
@@ -33,7 +29,6 @@ public class User {
         this.role = Role.USER;
         this.login = login;
         userMeter = new UserMeter();
-        audit = new ArrayList<>();
     }
 
     public User(String login) {
@@ -78,9 +73,6 @@ public class User {
         return firstName + " " + lastName + "\n" + role + "\n";
     }
 
-    public List<String> getAudit() {
-        return audit;
-    }
 
     public UserMeter getUserMeter() {
         return userMeter;

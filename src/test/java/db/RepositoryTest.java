@@ -1,8 +1,7 @@
 package db;
 
 import org.example.model.db.Repository;
-import org.example.model.user.User;
-import org.junit.jupiter.api.BeforeAll;
+import org.example.entity.user.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;

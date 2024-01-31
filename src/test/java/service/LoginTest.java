@@ -1,8 +1,8 @@
 package service;
 
 import org.example.model.db.Repository;
-import org.example.model.service.Login;
-import org.example.model.user.User;
+import org.example.model.service.UserLogin;
+import org.example.entity.user.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
@@ -20,7 +20,7 @@ public class LoginTest {
     public void loginTest(){
         User user = new User("a", "a", "a","a");
         repository.addUser(new User("a", "a", "a","a"));
-        User login = Login.login("a", "a");
+        User login = UserLogin.login("a", "a");
         assertEquals(user, login);
     }
 

@@ -1,11 +1,12 @@
 package org.example.in;
 
+import org.example.entity.audit.Audit;
 import org.example.model.meter.MeterWater;
-import org.example.model.service.Login;
-import org.example.model.service.Registration;
-import org.example.model.user.AdminPanel;
-import org.example.model.user.Role;
-import org.example.model.user.User;
+import org.example.model.service.UserLogin;
+import org.example.model.service.UserRegistration;
+import org.example.entity.user.AdminPanel;
+import org.example.entity.user.Role;
+import org.example.entity.user.User;
 import org.example.view.View;
 
 import java.io.BufferedReader;
@@ -36,23 +37,24 @@ public class Controller {
             switch (cons) {
                 case 1: {
                     View.createNewUser();
-                    if (!Registration.registration(bufferedReader.readLine(), bufferedReader.readLine(), bufferedReader.readLine(), bufferedReader.readLine())) {
+                    if (!UserRegistration.registration(bufferedReader.readLine(), bufferedReader.readLine(), bufferedReader.readLine(), bufferedReader.readLine())) {
                         View.errorRegistration();
                     }
                     View.successRegistration();
+
                     break;
                 }
                 case 2: {
                     View.enterLoginAndPassword();
                     String login = bufferedReader.readLine();
                     String password = bufferedReader.readLine();
-                    User user = Login.login(login, password);
+                    User user = UserLogin.login(login, password);
                     if (user == null) {
                         View.errorLogin();
                         break;
                     }
                     View.hello(user.getFirstName(), user.getLastName());
-                    user.getAudit().add("Пользователь вошёл в приложение");
+                    Audit.getAudit().addAction(user, "вошёл в приложение");
                     mainMenu(user, bufferedReader);
                     break;
                 }
@@ -81,7 +83,7 @@ public class Controller {
                 case 1: {
                     try {
                         System.out.println(user.getUserMeter().getLastMeterWater());
-                        user.getAudit().add("Пользователь посмотрел актульные показания");
+                        Audit.getAudit().addAction(user, "посмотрел актульные показания");
                     } catch (NoSuchElementException e) {
                         View.noMeter();
                     }
@@ -95,7 +97,7 @@ public class Controller {
                         View.errorTransferMeter();
                     } else {
                         View.successTransferMeter();
-                        user.getAudit().add("Пользователь добавил показания");
+                        Audit.getAudit().addAction(user, "добавил показания");
                     }
                     break;
                 }
@@ -104,7 +106,7 @@ public class Controller {
                         View.noMeter();
                     } else {
                         System.out.println(user.getUserMeter().getMeterList());
-                        user.getAudit().add("Пользователь посмотрел историю показаний");
+                        Audit.getAudit().addAction(user, "посмотрел историю показаний");
                     }
                     break;
                 }
@@ -114,7 +116,7 @@ public class Controller {
                         View.noMeterInMonth();
                     } else {
                         System.out.println(user.getUserMeter().getSpecificPeriodMeterWater(Integer.parseInt(bufferedReader.readLine())));
-                        user.getAudit().add("Пользователь посмотрел показания за определенный месяц");
+                        Audit.getAudit().addAction(user, "посмотрел показания за определенный месяц");
                     }
                     break;
                 }
@@ -122,14 +124,14 @@ public class Controller {
                     View.codeAdmin();
                     String code = bufferedReader.readLine();
                     if (code.equals(AdminPanel.getCode())) {
-                        user.getAudit().add("Пользователь стал администратором");
+                        Audit.getAudit().addAction(user, "стал администратором");
                         adminMenu(user, bufferedReader);
                     }
                     break;
                 }
                 case 6:
                     flag = false;
-                    user.getAudit().add("Пользователь вышел");
+                    Audit.getAudit().addAction(user, "вышел");
                     break;
                 default:
                     View.defaultStr();
@@ -158,7 +160,11 @@ public class Controller {
                     adminUserMenu(AdminPanel.getUserById(cons), bufferedReader);
                     break;
                 }
-                case 2: {
+                case 2:{
+                    View.audit(Audit.getAudit().getActions());
+                    break;
+                }
+                case 3: {
                     flag = false;
                     user.setRole(Role.USER);
                     break;
@@ -189,11 +195,7 @@ public class Controller {
                     }
                     break;
                 }
-                case 2: {
-                    View.audit(user.getAudit());
-                    break;
-                }
-                case 3:
+                case 2:
                     flag = false;
                     break;
             }

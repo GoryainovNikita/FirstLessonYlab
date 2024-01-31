@@ -1,12 +1,13 @@
 package org.example.model.service;
 
+import org.example.entity.audit.Audit;
 import org.example.model.db.Repository;
-import org.example.model.user.User;
+import org.example.entity.user.User;
 
 /**
  * Класс отвечающий за регистрацию пользователя.
  */
-public final class Registration {
+public final class UserRegistration {
 
     private static Repository repo = new Repository();
 
@@ -20,12 +21,12 @@ public final class Registration {
      */
 
     public static boolean registration(String firstName, String lastName,String login, String password) {
-        if (Validation.validation(login)) {
+        if (UserValidation.validation(login)) {
             return false;
         }
         User user = new User(firstName, lastName, login, password);
         repo.addUser(user);
-        user.getAudit().add("Регистрация пользователя");
+        Audit.getAudit().addAction(user, "зарегистрировался");
         return true;
     }
 }

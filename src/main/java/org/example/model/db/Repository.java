@@ -1,6 +1,6 @@
 package org.example.model.db;
 
-import org.example.model.user.User;
+import org.example.entity.user.User;
 
 import java.util.List;
 import java.util.NoSuchElementException;

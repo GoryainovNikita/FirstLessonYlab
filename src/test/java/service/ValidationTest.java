@@ -1,8 +1,8 @@
 package service;
 
 import org.example.model.db.Repository;
-import org.example.model.service.Validation;
-import org.example.model.user.User;
+import org.example.model.service.UserValidation;
+import org.example.entity.user.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
@@ -20,7 +20,7 @@ public class ValidationTest {
     public void validationTrueTest(){
         User user = new User("a", "a", "a","a");
         repository.addUser(new User("a", "a", "a","a"));
-        boolean a = Validation.validation("a");
+        boolean a = UserValidation.validation("a");
         assertEquals(true, a);
     }
 
@@ -28,7 +28,7 @@ public class ValidationTest {
     public void validationFalseTest(){
         User user = new User("a", "a", "a","a");
         repository.addUser(new User("a", "a", "a","a"));
-        boolean a = Validation.validation("b");
+        boolean a = UserValidation.validation("b");
         assertEquals(false, a);
     }
 }
