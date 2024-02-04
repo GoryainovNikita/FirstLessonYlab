@@ -1,6 +1,6 @@
 package org.example.model.service;
 
-import org.example.model.db.Repository;
+import org.example.model.repository.UserRepository;
 
 import java.util.NoSuchElementException;
 
@@ -10,13 +10,9 @@ import java.util.NoSuchElementException;
 
 public class UserValidation {
 
-    private static Repository repo = new Repository();
 
     public static boolean validation(String login){
-        try{
-            repo.getUserByLogin(login);
-        }
-        catch (NoSuchElementException e){
+        if(UserRepository.getUserByLogin(login) == null){
             return false;
         }
         return true;

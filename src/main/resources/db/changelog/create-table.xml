@@ -4,20 +4,67 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
       https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
-<!--<changeSet id="create-schema" author="nik">-->
-<!--    <sql>-->
-<!--        CREATE SCHEMA IF NOT EXISTS ylab;-->
-<!--    </sql>-->
-<!--</changeSet>-->
-    <changeSet id="create-table" author="nik">
-        <createTable tableName="users">
+    <changeSet id="create-schema" author="nik">
+        <sql>
+            CREATE SCHEMA IF NOT EXISTS ylab;
+        </sql>
+    </changeSet>
+
+    <changeSet id="create-table-users" author="nik">
+        <createTable tableName="users" schemaName="ylab">
             <column name="id" type="INT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="firstName" type="VARCHAR(255)"/>
-            <column name="lastName" type="VARCHAR(255)"/>
+            <column name="first_name" type="VARCHAR(255)"/>
+            <column name="last_name" type="VARCHAR(255)"/>
             <column name="login" type="VARCHAR(255)"/>
-
+            <column name="password" type="VARCHAR(255)"/>
+            <column name="role" type="TINYINT"/>
+<!--                <constraints foreignKeyName="fk_user_meter" referencedTableName="meter" referencedColumnNames="id" deleteCascade="true"/>-->
+        </createTable>
+<!--        <addForeignKeyConstraint baseTableName="" baseColumnNames="" constraintName="" referencedTableName=""-->
+<!--                                 referencedColumnNames=""/>-->
+    </changeSet>
+    <changeSet id="create-table-meter" author="nik">
+        <createTable tableName="meter" schemaName="ylab">
+            <column name="id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="cold_water" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="hot_water" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
     </changeSet>
+
+    <changeSet id="create-table-user-meter" author="nik">
+        <createTable tableName="user_meter" schemaName="ylab">
+            <column name="user_id" type="INT" autoIncrement="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="meter_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-table-audit" author="nik">
+        <createTable tableName="audit" schemaName="ylab">
+            <column name="id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="audit" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="INT">
+                <constraints nullable="false" foreignKeyName="fk_user_audit" referencedTableName="users" referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>

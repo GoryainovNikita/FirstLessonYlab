@@ -1,6 +1,6 @@
 package db;
 
-import org.example.model.db.Repository;
+import org.example.model.repository.UserRepository;
 import org.example.entity.user.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class RepositoryTest {
 
     @Spy
-    Repository repository = new Repository();
+    UserRepository repository = new UserRepository();
 
     @Test
     public void addAndGetUserTest(){

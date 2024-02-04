@@ -1,39 +1,20 @@
-package org.example.model.db;
+package org.example.model.repository;
 
 import org.example.entity.user.User;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * Класс для взаимодействия с базой данных.
  */
 public final class UserRepository {
 
-    private static final String URL = "jdbc:postgresql://localhost:5432/ylab?currentSchema=ylab";
-    private static final String USER_NAME = "user";
-    private static final String PASSWORD = "root";
-
-    public static Connection getConnection(){
-        try {
-            Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD);
-            return connection;
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return null;
-    }
-
-    private static DataBase dataBase;
-
-    public UserRepository() {
-        this.dataBase = DataBase.getDataBase();
-    }
-
-    public void addUser(User user){
-        String addUser = "INSERT into users (firstName, lastName, login, password, role) VALUES (?, ?, ?, ?, ?,);";
-        Connection connection = getConnection();
+    public static void addUser(User user){
+        String addUser = "INSERT into users (first_name, last_name, login, password, role) VALUES (?, ?, ?, ?, ?)";
+        Connection connection = ConnectionDB.getConnection();
         try {
             connection.setAutoCommit(false);
             PreparedStatement preparedStatement = connection.prepareStatement(addUser);
@@ -53,20 +34,22 @@ public final class UserRepository {
             }
         }
     }
-    public User getUserByLogin(String login){
-        return getUser("SELECT * from users where login = " + login);
+    public static User getUserByLogin(String login) throws NoSuchElementException{
+            User user = getUser("SELECT * from users where login = " + "\'" + login + "\'");
+
+        return user;
     }
 
-    public List<User> getUsers(){
+    public static List<User> getUsers(){
         List<User> users = new ArrayList<>();
-        Connection connection = getConnection();
+        Connection connection = ConnectionDB.getConnection();
         try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * from users");
             while (resultSet.next()){
                 int id = resultSet.getInt("id");
-                String firstName = resultSet.getString("firstName");
-                String lastName = resultSet.getString("lastName");
+                String firstName = resultSet.getString("first_name");
+                String lastName = resultSet.getString("last_name");
                 String loginUser = resultSet.getString("login");
                 String password = resultSet.getString("password");
                 int role = resultSet.getInt("role");
@@ -79,28 +62,28 @@ public final class UserRepository {
         return users;
     }
 
-    public User getUserById(int id){
+    public static User getUserById(int id){
         return getUser( "SELECT * from users where id = " + id);
     }
 
-    private User getUser(String str){
-        Connection connection = getConnection();
+    private static User getUser(String str){
+        Connection connection = ConnectionDB.getConnection();
         try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(str);
             while (resultSet.next()){
                 int idUser = resultSet.getInt("id");
-                String firstName = resultSet.getString("firstName");
-                String lastName = resultSet.getString("lastName");
+                String firstName = resultSet.getString("first_name");
+                String lastName = resultSet.getString("last_name");
                 String loginUser = resultSet.getString("login");
                 String password = resultSet.getString("password");
                 int role = resultSet.getInt("role");
                 User user = new User(idUser,firstName,lastName,loginUser,password);
+                connection.close();
                 return user;
             }
-
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new NoSuchElementException();
         }
         return null;
     }

@@ -1,16 +1,14 @@
 package org.example.model.service;
 
 import org.example.entity.audit.Audit;
-import org.example.model.db.Repository;
+import org.example.model.repository.AuditRepository;
+import org.example.model.repository.UserRepository;
 import org.example.entity.user.User;
 
 /**
  * Класс отвечающий за регистрацию пользователя.
  */
 public final class UserRegistration {
-
-    private static Repository repo = new Repository();
-
     /**
      * Метод проверяющий существует ли такой пользователь, если нет то регистрирует его.
      * @param firstName
@@ -25,8 +23,10 @@ public final class UserRegistration {
             return false;
         }
         User user = new User(firstName, lastName, login, password);
-        repo.addUser(user);
-        Audit.getAudit().addAction(user, "зарегистрировался");
+        UserRepository.addUser(user);
+        User userByLogin = UserRepository.getUserByLogin(login);
+        Audit audit = new Audit("Зарегистрировался", userByLogin.getId());
+        AuditRepository.addAudit(audit);
         return true;
     }
 }

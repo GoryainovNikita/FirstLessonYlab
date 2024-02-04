@@ -1,6 +1,6 @@
 package service;
 
-import org.example.model.db.Repository;
+import org.example.model.repository.UserRepository;
 import org.example.model.service.UserLogin;
 import org.example.entity.user.User;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class LoginTest {
 
     @Spy
-    Repository repository = new Repository();
+    UserRepository repository = new UserRepository();
 
     @Test
     public void loginTest(){

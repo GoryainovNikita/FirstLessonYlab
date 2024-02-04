@@ -1,5 +1,6 @@
 package org.example.view;
 
+import org.example.entity.audit.Audit;
 import org.example.entity.user.User;
 
 import java.util.List;
@@ -111,9 +112,9 @@ public class View {
         System.out.println("Вы видимо опечатались");
     }
 
-    public static void audit(List<String> strings){
-        for(int i = 0; i<strings.size(); i++){
-            System.out.println(i+1 + ". " + strings.get(i));
+    public static void audit(List<Audit> audits){
+        for(int i = 0; i<audits.size(); i++){
+            System.out.println(i+1 + ". " + audits.get(i).getAudit());
         }
         System.out.println();
     }

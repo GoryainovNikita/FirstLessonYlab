@@ -1,4 +1,4 @@
-package org.example.model.db;
+package org.example.model.repository;
 
 import org.example.entity.user.User;
 

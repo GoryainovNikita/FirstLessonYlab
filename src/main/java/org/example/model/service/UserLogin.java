@@ -1,6 +1,6 @@
 package org.example.model.service;
 
-import org.example.model.db.Repository;
+import org.example.model.repository.UserRepository;
 import org.example.entity.user.User;
 
 /**
@@ -8,8 +8,6 @@ import org.example.entity.user.User;
  */
 
 public class UserLogin {
-    private static Repository repo = new Repository();
-
     /**
      * Проверяет валидацию, и пускает либо не пускает пользователя
      * @param login
@@ -18,7 +16,7 @@ public class UserLogin {
      */
     public static User login(String login, String password) {
         if (UserValidation.validation(login)) {
-            User user = repo.getUserByLogin(login);
+            User user = UserRepository.getUserByLogin(login);
             if (password.equals(user.getPassword())) {
                 return user;
             }
