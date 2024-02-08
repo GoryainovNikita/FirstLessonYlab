@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 public class MeterWaterRepository {
 
@@ -15,8 +16,7 @@ public class MeterWaterRepository {
     public static void addMeterWater(User user, MeterWater meterWater){
         String addMeterWater = "INSERT into meter (cold_water, hot_water, date) VALUES (?, ?, ?)";
         String meterUser = "INSERT into user_meter (user_id, meter_id) values (?, ?)";
-        Connection connection = ConnectionDB.getConnection();
-        try {
+        try(Connection connection = ConnectionDB.getConnection();) {
 
             PreparedStatement preparedStatement = connection.prepareStatement(addMeterWater);
             preparedStatement.setInt(1, meterWater.getColdWater());
@@ -30,40 +30,16 @@ public class MeterWaterRepository {
             preparedStatement1.setInt(1, user.getId());
             preparedStatement1.setInt(2, meterWater1.getId());
             preparedStatement1.executeUpdate();
-
-            connection.close();
         } catch (SQLException e) {
-            try {
-                connection.rollback();
-            } catch (SQLException ex) {
-                e.printStackTrace();
-            }
+            e.printStackTrace();
         }
 
     }
 
-
-//    public static MeterWater getLastMeterWater(User user){
-//        Connection connection = ConnectionDB.getConnection();
-//        MeterWater meterWater = null;
-//        try {
-//            Statement statement = connection.createStatement();
-//            ResultSet resultSet = statement.executeQuery("SELECT meter_id from user_meter where user_id = " + user.getId());
-//            List<Integer> listId = new ArrayList<>();
-//            while (resultSet.next()){
-//                int id = resultSet.getInt("meter_id");
-//                listId.add(id);
-//            }
-//                meterWater = getMeterWaterById(listId.get(listId.size()-1));
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
-//        return meterWater;
-//    }
     public static List<MeterWater> getAllMeterWaterUser(User user){
         List<MeterWater> meterWaters = new ArrayList<>();
-        Connection connection = ConnectionDB.getConnection();
-        try {
+
+        try(Connection connection = ConnectionDB.getConnection()) {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT meter_id from user_meter where user_id = " + user.getId());
             List<Integer> listId = new ArrayList<>();
@@ -87,8 +63,8 @@ public class MeterWaterRepository {
     }
 
     private static MeterWater getMeterWater(String str) {
-        Connection connection = ConnectionDB.getConnection();
-        try {
+
+        try(Connection connection = ConnectionDB.getConnection()) {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(str);
             while (resultSet.next()) {
@@ -103,6 +79,8 @@ public class MeterWaterRepository {
         } catch (SQLException e) {
             throw new NoSuchElementException();
         }
+
+        //вернуть Optional
         return null;
     }
 

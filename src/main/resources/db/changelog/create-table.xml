@@ -20,10 +20,8 @@
             <column name="login" type="VARCHAR(255)"/>
             <column name="password" type="VARCHAR(255)"/>
             <column name="role" type="TINYINT"/>
-<!--                <constraints foreignKeyName="fk_user_meter" referencedTableName="meter" referencedColumnNames="id" deleteCascade="true"/>-->
         </createTable>
-<!--        <addForeignKeyConstraint baseTableName="" baseColumnNames="" constraintName="" referencedTableName=""-->
-<!--                                 referencedColumnNames=""/>-->
+
     </changeSet>
     <changeSet id="create-table-meter" author="nik">
         <createTable tableName="meter" schemaName="ylab">

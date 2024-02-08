@@ -14,14 +14,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
+import java.sql.SQLException;
 
 /**
  * Вход в программу
  */
 public class Main {
     public static void main(String[] args) {
-        try {
-            Connection connection = ConnectionDB.getConnection();
+        try(Connection connection = ConnectionDB.getConnection();) {
             Database correctDatabaseImplementation = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
             correctDatabaseImplementation.setDefaultSchemaName("ylab");
             correctDatabaseImplementation.setLiquibaseSchemaName("public");
@@ -32,8 +32,9 @@ public class Main {
             e.printStackTrace();
         } catch (LiquibaseException e) {
             e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-
         Controller controller = new Controller();
         try(BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in))){
             controller.start(bufferedReader);

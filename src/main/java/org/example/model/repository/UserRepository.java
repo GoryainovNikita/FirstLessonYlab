@@ -14,8 +14,8 @@ public final class UserRepository {
 
     public static void addUser(User user){
         String addUser = "INSERT into users (first_name, last_name, login, password, role) VALUES (?, ?, ?, ?, ?)";
-        Connection connection = ConnectionDB.getConnection();
-        try {
+
+        try(Connection connection = ConnectionDB.getConnection();) {
             connection.setAutoCommit(false);
             PreparedStatement preparedStatement = connection.prepareStatement(addUser);
             preparedStatement.setString(1, user.getFirstName());
@@ -25,13 +25,9 @@ public final class UserRepository {
             preparedStatement.setInt(5, 0);
             preparedStatement.executeUpdate();
             connection.commit();
-            connection.close();
+
         } catch (SQLException e) {
-            try {
-                connection.rollback();
-            } catch (SQLException ex) {
-                e.printStackTrace();
-            }
+            e.printStackTrace();
         }
     }
     public static User getUserByLogin(String login) throws NoSuchElementException{
@@ -42,8 +38,8 @@ public final class UserRepository {
 
     public static List<User> getUsers(){
         List<User> users = new ArrayList<>();
-        Connection connection = ConnectionDB.getConnection();
-        try {
+
+        try(Connection connection = ConnectionDB.getConnection()) {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * from users");
             while (resultSet.next()){
@@ -67,8 +63,8 @@ public final class UserRepository {
     }
 
     private static User getUser(String str){
-        Connection connection = ConnectionDB.getConnection();
-        try {
+
+        try(Connection connection = ConnectionDB.getConnection()) {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(str);
             while (resultSet.next()){
