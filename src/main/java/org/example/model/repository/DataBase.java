@@ -1,6 +1,6 @@
-package org.example.model.db;
+package org.example.model.repository;
 
-import org.example.model.user.User;
+import org.example.entity.user.User;
 
 import java.util.ArrayList;
 import java.util.List;

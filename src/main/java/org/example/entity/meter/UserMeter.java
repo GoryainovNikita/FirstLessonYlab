@@ -1,4 +1,7 @@
-package org.example.model.meter;
+package org.example.entity.meter;
+
+import org.example.entity.user.User;
+import org.example.model.repository.MeterWaterRepository;
 
 import java.time.Period;
 import java.util.ArrayList;
@@ -7,39 +10,35 @@ import java.util.NoSuchElementException;
 
 public class UserMeter {
 
-    private List<MeterWater> meterWaterList;
-
-    public UserMeter() {
-        this.meterWaterList = new ArrayList<>();
-    }
-
     /**
      * Метод позволяющий передать показания.
      * @param meter
      * @return
      */
-    public boolean handOverMeterWater(MeterWater meter){
-        if(!meterWaterList.isEmpty()) {
-            MeterWater meterWater = getLastMeterWater();
+    public static boolean handOverMeterWater(User user, MeterWater meter){
+        if(!MeterWaterRepository.getAllMeterWaterUser(user).isEmpty()) {
+            MeterWater meterWater = UserMeter.getLastMeterWater(user);
             if (Period.between(meterWater.getDate(), meter.getDate()).getMonths() < 1) {
                 return false;
             } else if (meterWater.getColdWater() > meter.getColdWater() || meterWater.getHotWater() > meter.getHotWater()) {
                 return false;
             }
         }
-        meterWaterList.add(meter);
+        MeterWaterRepository.addMeterWater(user, meter);
         return true;
     }
+
 
     /**
      * Метод позволяющий получить последнее сданное показание
      * @return
      */
-    public MeterWater getLastMeterWater(){
-        if(meterWaterList.isEmpty()){
+    public static MeterWater getLastMeterWater(User user){
+        List<MeterWater> allMeterWaterUser = MeterWaterRepository.getAllMeterWaterUser(user);
+        if(allMeterWaterUser.isEmpty()){
             throw new NoSuchElementException("Нет показаний");
         }
-        return meterWaterList.get(meterWaterList.size() - 1);
+        return allMeterWaterUser.get(allMeterWaterUser.size() - 1);
     }
 
     /**
@@ -47,16 +46,14 @@ public class UserMeter {
      * @param month
      * @return
      */
-    public MeterWater getSpecificPeriodMeterWater(int month){
-        for(int i = 0; i<meterWaterList.size(); i++){
-            if(meterWaterList.get(i).getDate().getMonthValue() == month){
-                return meterWaterList.get(i);
+    public static MeterWater getSpecificPeriodMeterWater(int month, User user){
+        List<MeterWater> allMeterWaterUser = MeterWaterRepository.getAllMeterWaterUser(user);
+        for(int i = 0; i<allMeterWaterUser.size(); i++){
+            if(allMeterWaterUser.get(i).getDate().getMonthValue() == month){
+                return allMeterWaterUser.get(i);
             }
         }
         return null;
     }
 
-    public List<MeterWater> getMeterList() {
-        return new ArrayList<>(meterWaterList);
-    }
 }

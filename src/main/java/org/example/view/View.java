@@ -1,6 +1,7 @@
 package org.example.view;
 
-import org.example.model.user.User;
+import org.example.entity.audit.Audit;
+import org.example.entity.user.User;
 
 import java.util.List;
 
@@ -90,7 +91,8 @@ public class View {
     public static void adminMenu() {
         System.out.println(
                 "1. Показать показания пользователей\n" +
-                        "2. Выйти из режима администратора\n");
+                        "2. Посмотреть аудит пользователей\n" +
+                        "3. Выйти из режима администратора\n");
     }
 
     public static void displayingUsers(List<User> users) {
@@ -103,17 +105,16 @@ public class View {
     public static void menuWithoutAdmin() {
         System.out.println(
                 "1. Посмотреть историю показаний\n" +
-                        "2. Посмотреть аудит пользователя\n" +
-                        "3. Выйти");
+                        "2. Выйти");
     }
 
     public static void defaultStr() {
         System.out.println("Вы видимо опечатались");
     }
 
-    public static void audit(List<String> strings){
-        for(int i = 0; i<strings.size(); i++){
-            System.out.println(i+1 + ". " + strings.get(i));
+    public static void audit(List<Audit> audits){
+        for(int i = 0; i<audits.size(); i++){
+            System.out.println(i+1 + ". " + audits.get(i).getAudit());
         }
         System.out.println();
     }

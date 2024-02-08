@@ -1,12 +1,7 @@
-package org.example.model.user;
+package org.example.entity.user;
 
-import org.example.model.meter.MeterWater;
-import org.example.model.meter.UserMeter;
+import org.example.entity.meter.UserMeter;
 
-import java.time.Period;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 
 /**
@@ -15,26 +10,32 @@ import java.util.Objects;
 
 public class User {
 
+    private int id;
+
     private String firstName;
     private String lastName;
     private String password;
     private Role role;
     private String login;
 
-    private UserMeter userMeter;
-
-    private List<String> audit;
 
 
+    public User(int id ,String firstName, String lastName, String login, String password) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+        this.role = Role.USER;
+        this.login = login;
+    }
     public User(String firstName, String lastName, String login, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
         this.role = Role.USER;
         this.login = login;
-        userMeter = new UserMeter();
-        audit = new ArrayList<>();
     }
+
 
     public User(String login) {
         this.login = login;
@@ -78,11 +79,12 @@ public class User {
         return firstName + " " + lastName + "\n" + role + "\n";
     }
 
-    public List<String> getAudit() {
-        return audit;
+
+    public String getLogin() {
+        return login;
     }
 
-    public UserMeter getUserMeter() {
-        return userMeter;
+    public int getId() {
+        return id;
     }
 }

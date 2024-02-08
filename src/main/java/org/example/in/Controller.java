@@ -1,16 +1,21 @@
 package org.example.in;
 
-import org.example.model.meter.MeterWater;
-import org.example.model.service.Login;
-import org.example.model.service.Registration;
-import org.example.model.user.AdminPanel;
-import org.example.model.user.Role;
-import org.example.model.user.User;
+import org.example.entity.audit.Audit;
+import org.example.entity.meter.MeterWater;
+import org.example.entity.meter.UserMeter;
+import org.example.model.repository.AuditRepository;
+import org.example.model.repository.MeterWaterRepository;
+import org.example.model.service.UserLogin;
+import org.example.model.service.UserRegistration;
+import org.example.entity.user.AdminPanel;
+import org.example.entity.user.Role;
+import org.example.entity.user.User;
 import org.example.view.View;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
@@ -36,23 +41,26 @@ public class Controller {
             switch (cons) {
                 case 1: {
                     View.createNewUser();
-                    if (!Registration.registration(bufferedReader.readLine(), bufferedReader.readLine(), bufferedReader.readLine(), bufferedReader.readLine())) {
+                    if (!UserRegistration.registration(bufferedReader.readLine(), bufferedReader.readLine(), bufferedReader.readLine(), bufferedReader.readLine())) {
                         View.errorRegistration();
                     }
-                    View.successRegistration();
+                    else {
+                        View.successRegistration();
+                    }
                     break;
                 }
                 case 2: {
                     View.enterLoginAndPassword();
                     String login = bufferedReader.readLine();
                     String password = bufferedReader.readLine();
-                    User user = Login.login(login, password);
+                    User user = UserLogin.login(login, password);
                     if (user == null) {
                         View.errorLogin();
                         break;
                     }
                     View.hello(user.getFirstName(), user.getLastName());
-                    user.getAudit().add("Пользователь вошёл в приложение");
+                    Audit audit = new Audit("Вошёл в приложение", user.getId());
+                    AuditRepository.addAudit(audit);
                     mainMenu(user, bufferedReader);
                     break;
                 }
@@ -80,41 +88,45 @@ public class Controller {
             switch (choice) {
                 case 1: {
                     try {
-                        System.out.println(user.getUserMeter().getLastMeterWater());
-                        user.getAudit().add("Пользователь посмотрел актульные показания");
+                        System.out.println(UserMeter.getLastMeterWater(user));
+                        Audit audit = new Audit("Посмотрел актульные показания", user.getId());
+                        AuditRepository.addAudit(audit);
                     } catch (NoSuchElementException e) {
                         View.noMeter();
                     }
-
                     break;
                 }
                 case 2: {
                     View.addNewMeterWater();
                     MeterWater meterWater = new MeterWater(Integer.parseInt(bufferedReader.readLine()), Integer.parseInt(bufferedReader.readLine()), LocalDate.now());
-                    if (!user.getUserMeter().handOverMeterWater(meterWater)) {
+                    if (!UserMeter.handOverMeterWater(user, meterWater)) {
                         View.errorTransferMeter();
                     } else {
                         View.successTransferMeter();
-                        user.getAudit().add("Пользователь добавил показания");
+                        Audit audit = new Audit("Добавил показания", user.getId());
+                        AuditRepository.addAudit(audit);
                     }
                     break;
                 }
                 case 3: {
-                    if (user.getUserMeter().getMeterList().isEmpty()) {
+                    List<MeterWater> meterWaters = MeterWaterRepository.getAllMeterWaterUser(user);
+                    if (meterWaters.isEmpty()) {
                         View.noMeter();
                     } else {
-                        System.out.println(user.getUserMeter().getMeterList());
-                        user.getAudit().add("Пользователь посмотрел историю показаний");
+                        System.out.println(meterWaters);
+                        Audit audit = new Audit("Посмотрел историю показаний", user.getId());
+                        AuditRepository.addAudit(audit);
                     }
                     break;
                 }
                 case 4: {
                     View.monthOfMeter();
-                    if (user.getUserMeter().getSpecificPeriodMeterWater(Integer.parseInt(bufferedReader.readLine())) == null) {
+                    if (UserMeter.getSpecificPeriodMeterWater(Integer.parseInt(bufferedReader.readLine()), user) == null) {
                         View.noMeterInMonth();
                     } else {
-                        System.out.println(user.getUserMeter().getSpecificPeriodMeterWater(Integer.parseInt(bufferedReader.readLine())));
-                        user.getAudit().add("Пользователь посмотрел показания за определенный месяц");
+                        System.out.println(UserMeter.getSpecificPeriodMeterWater(Integer.parseInt(bufferedReader.readLine()),user));
+                        Audit audit = new Audit("Посмотрел показания за определенный месяц", user.getId());
+                        AuditRepository.addAudit(audit);
                     }
                     break;
                 }
@@ -122,14 +134,17 @@ public class Controller {
                     View.codeAdmin();
                     String code = bufferedReader.readLine();
                     if (code.equals(AdminPanel.getCode())) {
-                        user.getAudit().add("Пользователь стал администратором");
+
+                        Audit audit = new Audit("Cтал администратором", user.getId());
+                        AuditRepository.addAudit(audit);
                         adminMenu(user, bufferedReader);
                     }
                     break;
                 }
                 case 6:
                     flag = false;
-                    user.getAudit().add("Пользователь вышел");
+                    Audit audit = new Audit("Вышел", user.getId());
+                    AuditRepository.addAudit(audit);
                     break;
                 default:
                     View.defaultStr();
@@ -158,7 +173,11 @@ public class Controller {
                     adminUserMenu(AdminPanel.getUserById(cons), bufferedReader);
                     break;
                 }
-                case 2: {
+                case 2:{
+                    View.audit(AuditRepository.getAudit());
+                    break;
+                }
+                case 3: {
                     flag = false;
                     user.setRole(Role.USER);
                     break;
@@ -182,18 +201,15 @@ public class Controller {
             int console = Integer.parseInt(bufferedReader.readLine());
             switch (console){
                 case 1: {
-                    if (user.getUserMeter().getMeterList().isEmpty()) {
+                    List<MeterWater> meterWaters = MeterWaterRepository.getAllMeterWaterUser(user);
+                    if (meterWaters.isEmpty()) {
                         View.noMeter();
                     } else {
-                        System.out.println(user.getUserMeter().getMeterList());
+                        System.out.println(meterWaters);
                     }
                     break;
                 }
-                case 2: {
-                    View.audit(user.getAudit());
-                    break;
-                }
-                case 3:
+                case 2:
                     flag = false;
                     break;
             }

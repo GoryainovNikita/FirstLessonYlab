@@ -1,8 +1,8 @@
 package service;
 
-import org.example.model.db.Repository;
-import org.example.model.service.Registration;
-import org.example.model.user.User;
+import org.example.model.repository.UserRepository;
+import org.example.model.service.UserRegistration;
+import org.example.entity.user.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
@@ -14,12 +14,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class RegistrationTest {
 
     @Spy
-    Repository repository = new Repository();
+    UserRepository repository = new UserRepository();
 
     @Test
     public void registrationTest(){
         User user = new User("a", "a", "a","a");
-        boolean registration = Registration.registration("a", "a", "a", "a");
+        boolean registration = UserRegistration.registration("a", "a", "a", "a");
         assertEquals(user, repository.getUserByLogin("a"));
         assertEquals(true, registration);
     }
