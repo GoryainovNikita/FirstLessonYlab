@@ -1,5 +1,6 @@
 package org.example.entity.meter;
 
+import org.example.aop.annotations.Loggable;
 import org.example.entity.user.User;
 import org.example.model.repository.MeterWaterRepository;
 
@@ -33,6 +34,7 @@ public class UserMeter {
      * Метод позволяющий получить последнее сданное показание
      * @return
      */
+    @Loggable
     public static MeterWater getLastMeterWater(User user){
         List<MeterWater> allMeterWaterUser = MeterWaterRepository.getAllMeterWaterUser(user);
         if(allMeterWaterUser.isEmpty()){
@@ -46,6 +48,7 @@ public class UserMeter {
      * @param month
      * @return
      */
+    @Loggable
     public static MeterWater getSpecificPeriodMeterWater(int month, User user){
         List<MeterWater> allMeterWaterUser = MeterWaterRepository.getAllMeterWaterUser(user);
         for(int i = 0; i<allMeterWaterUser.size(); i++){

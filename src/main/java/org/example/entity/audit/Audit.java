@@ -16,6 +16,10 @@ public class Audit {
         this.userId = userId;
     }
 
+    public Audit(String audit) {
+        this.audit = audit;
+    }
+
     public String getAudit() {
         return audit;
     }
