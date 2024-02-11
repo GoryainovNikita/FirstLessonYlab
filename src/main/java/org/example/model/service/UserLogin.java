@@ -1,5 +1,6 @@
 package org.example.model.service;
 
+import org.example.aop.annotations.Loggable;
 import org.example.model.repository.UserRepository;
 import org.example.entity.user.User;
 
@@ -14,6 +15,8 @@ public class UserLogin {
      * @param password
      * @return
      */
+
+    @Loggable
     public static User login(String login, String password) {
         if (UserValidation.validation(login)) {
             User user = UserRepository.getUserByLogin(login);
